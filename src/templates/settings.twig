@@ -1,0 +1,25 @@
+{% extends "_layouts/cp" %}
+{% import '_includes/forms' as forms %}
+{% set docTitle = 'test' %}
+{% set selectedSubnavItem = 'contentreactor-jwt/settings' %}
+{% set fullPageForm = true %}
+
+{% block content %}
+    <div class="cp-container">
+        <form method="post" accept-charset="UTF-8">
+            {{ csrfInput() }}
+            {{ redirectInput('contentreactor-jwt/settings') }}
+            <input type="hidden" name="action" value="yourplugin/settings/save-settings">
+
+            <h2>ContentReactor JWT API</h2>
+
+            {{ forms.textField({
+                label: "Your Setting",
+                id: 'yourSetting',
+                name: 'settings[yourSetting]',
+            }) }}
+
+            <button class="btn submit">Save Settings</button>
+        </form>
+    </div>
+{% endblock %}
