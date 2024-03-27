@@ -6,7 +6,9 @@ use DateTimeImmutable;
 use contentreactor\jwt\services\AuthService;
 use contentreactor\jwt\services\Jwt;
 use contentreactor\jwt\services\TokenService;
+use Craft;
 use craft\elements\User;
+use DateTime;
 use yii\base\InvalidConfigException;
 use yii\base\Response;
 use yii\rest\Controller;
@@ -16,6 +18,8 @@ use yii\rest\Controller;
  */
 class JwtController extends Controller
 {
+    const ENV_EXPIRE = 'JWT_EXPIRE';
+
     /**
      * @inheritdoc
      */
@@ -36,6 +40,8 @@ class JwtController extends Controller
      */
     private $tokenService;
 
+    private $time;
+
     /**
      * Constructor.
      *
@@ -49,10 +55,12 @@ class JwtController extends Controller
         $module,
         AuthService $authService,
         TokenService $tokenService,
+        DateTime $time,
         array $congig = []
     ) {
         $this->authService = $authService;
         $this->tokenService = $tokenService;
+        $this->time = $time;
         parent::__construct($id, $module, $congig);
     }
 
@@ -86,6 +94,7 @@ class JwtController extends Controller
     {
         $_tokenService = $this->tokenService;
         $tokenRecord = $_tokenService->getTokenForUser($user->id)->token ?? null;
+        $pluginSettings = Craft::$app->getProjectConfig()->get('contentreactor-jwt');
 
         if (strlen($tokenRecord) > 1) {
             $token = $_tokenService->getTokenForUser($user->id)->token;
@@ -95,13 +104,13 @@ class JwtController extends Controller
                 $user = $_tokenService->saveTokenForUser(
                     $user->id,
                     $token,
-                    new DateTimeImmutable(
-                        getenv(TokenService::ENV_EXPIRE)
+                    $this->time->modify(
+                        getenv($_tokenService->replaceKey($pluginSettings['jwtExpire'])) ?? 
+                        getenv(self::ENV_EXPIRE)
                     )
                 );
             }
         }
-
         return $token;
     }
 }

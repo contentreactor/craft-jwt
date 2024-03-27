@@ -8,7 +8,7 @@ use craft\db\ActiveRecord;
 /**
  * @property int $userId
  * @property string $token
- * @property int $expiration_date
+ * @property string $expiration_date
  */
 class JwtRecord extends ActiveRecord
 {

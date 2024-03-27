@@ -47,6 +47,8 @@ class JwtAuthMiddleware extends ActionFilter
             $haveGroup = Plugin::getInstance()->getAuth()->userHavePermission($user->id);
             if ($user->can("jwt-use-api") && $haveGroup) {
                 return true;
+            } else {
+                return false;
             }
         } else {
             return false;

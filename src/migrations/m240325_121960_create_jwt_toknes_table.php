@@ -8,13 +8,14 @@ use craft\db\Table;
 /**
  * m240325_121957_create_jwt_toknes_table migration.
  */
-class m240325_121959_create_jwt_toknes_table extends Migration
+class m240325_121960_create_jwt_toknes_table extends Migration
 {
     /**
      * @inheritdoc
      */
     public function safeUp(): bool
     {
+        $this->archiveTableIfExists(Install::TABLE_JWT_TOKENS);
         $this->createTable(Install::TABLE_JWT_TOKENS, [
             'id' => $this->primaryKey(),
             'user_id' => $this->integer(),

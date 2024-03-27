@@ -72,7 +72,7 @@ class TokenService extends Component
             $jwtToken = new JwtRecord();
             $jwtToken->user_id = $jwtModel->userId;
             $jwtToken->token = $jwtModel->token;
-            $jwtToken->expiration_date = $jwtModel->expirationDate->format('Y-m-d H:i:s');
+            $jwtToken->expiration_date = $jwtModel->expiration_date;
             if ($jwtToken->validate()) {
                 $jwtToken->save();
             }
@@ -135,17 +135,17 @@ class TokenService extends Component
         $pluginSettings = Craft::$app->getProjectConfig()->get('contentreactor-jwt');
         $tokenBuilder = (new Builder(new JoseEncoder(), ChainedFormatter::default()));
         $algorithm    = new Sha256();
-        $signingKey   = InMemory::plainText($pluginSettings['jwtSecretKey'] ?? getenv(self::ENV_SECRET_KEY));
+        $signingKey   = InMemory::plainText(getenv($this->replaceKey($pluginSettings['jwtSecretKey'])) ?? getenv(self::ENV_SECRET_KEY));
 
         $now   = new DateTimeImmutable();
 
         $token = $tokenBuilder
             ->issuedBy(getenv(self::ENV_PRIMARY_SITE_URL))
             ->permittedFor(getenv(self::ENV_PRIMARY_SITE_URL))
-            ->identifiedBy($pluginSettings['jwtId'] ?? getenv(self::ENV_ID), true)
+            ->identifiedBy(getenv($this->replaceKey($pluginSettings['jwtId'])) ?? getenv(self::ENV_ID), true)
             ->issuedAt($now)
-            ->canOnlyBeUsedAfter($now->modify($pluginSettings['jwtRequestTime'] ?? getenv(self::ENV_REQUEST_TIME)))
-            ->expiresAt($now->modify($pluginSettings['jwtExpire'] ?? getenv(self::ENV_EXPIRE)))
+            ->canOnlyBeUsedAfter($now->modify(getenv($this->replaceKey($pluginSettings['jwtRequestTime'])) ?? getenv(self::ENV_REQUEST_TIME)))
+            ->expiresAt($now->modify(getenv($this->replaceKey($pluginSettings['jwtExpire'])) ?? getenv(self::ENV_EXPIRE)))
             ->withClaim('uid', $user->id)
             ->withClaim('email', $user->email)
             ->getToken($algorithm, $signingKey);
@@ -160,5 +160,9 @@ class TokenService extends Component
     public function headerToken($token): string
     {
         return str_replace(" ", "", ltrim($token, 'Bearer'));
+    }
+
+    public function replaceKey($key): string {
+        return str_replace("$", "", $key);
     }
 }
