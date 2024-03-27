@@ -5,6 +5,7 @@ namespace contentreactor\jwt\controllers;
 use contentreactor\jwt\models\JwtSettingsModel;
 use Craft;
 use craft\web\Controller;
+use yii\web\Response;
 
 /**
  * Settings Controller controller
@@ -26,7 +27,7 @@ class SettingsController extends Controller
      *
      * @return Response
      */
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         $settings = $this->getSettingsModel();
         return $this->renderTemplate('contentreactor-jwt/settings', [
@@ -39,7 +40,7 @@ class SettingsController extends Controller
      *
      * @return JwtSettingsModel The plugin settings model.
      */
-    private function getSettingsModel()
+    private function getSettingsModel(): JwtSettingsModel
     {
         $plugin = Craft::$app->plugins->getPlugin('contentreactor-jwt');
         return $plugin->getSettings();
@@ -50,7 +51,7 @@ class SettingsController extends Controller
      *
      * @return Response The response to be sent.
      */
-    public function actionSaveSettings()
+    public function actionSaveSettings(): Response
     {
         $this->requirePostRequest();
         $params = Craft::$app->getRequest()->getBodyParams();
