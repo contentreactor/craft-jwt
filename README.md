@@ -2,6 +2,17 @@
 
 JWT Auth plugin for Craft CMS
 
+## Usage
+``` bash
+POST /api/auth
+# body params
+{
+    "loginName": "admin@contentreactor.com", # You can use username or email
+    "password": "admin"
+}
+```
+You need to have ContentReactor API user group and ContentReactor JWT (Use API with JWT auth) permission added to your profile. 
+
 ## Requirements
 
 This plugin requires Craft CMS 4.7.0 or later, and PHP 8.0.2 or later.

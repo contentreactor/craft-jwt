@@ -22,7 +22,7 @@ class Install extends Migration
 		return true;
 	}
 
-        /**
+    /**
      * @inheritdoc
      */
 	public function safeDown(): bool

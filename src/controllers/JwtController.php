@@ -2,9 +2,7 @@
 
 namespace contentreactor\jwt\controllers;
 
-use DateTimeImmutable;
 use contentreactor\jwt\services\AuthService;
-use contentreactor\jwt\services\Jwt;
 use contentreactor\jwt\services\TokenService;
 use Craft;
 use craft\elements\User;
@@ -18,6 +16,10 @@ use yii\rest\Controller;
  */
 class JwtController extends Controller
 {
+    /**
+     * The environment variable key for the JWT expiration time.
+     * @var string
+     */
     const ENV_EXPIRE = 'JWT_EXPIRE';
 
     /**
@@ -40,6 +42,9 @@ class JwtController extends Controller
      */
     private $tokenService;
 
+    /**
+     * @var DateTime dateTime.
+     */
     private $time;
 
     /**
@@ -47,7 +52,9 @@ class JwtController extends Controller
      *
      * @param string $id
      * @param mixed $module
-     * @param JWT $jwtService The auth service instance.
+     * @param AuthService $authService The auth service instance.
+     * @param TokenService $tokenService The auth service instance.
+     * @param DateTime $time
      * @param array $config
      */
     public function __construct(

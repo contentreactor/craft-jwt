@@ -27,10 +27,34 @@ use yii\base\InvalidConfigException;
  */
 class TokenService extends Component
 {
+    /**
+     * The environment variable key for the JWT secret key.
+     * @var string
+     */
     const ENV_SECRET_KEY = 'JWT_SECRET_KEY';
+
+    /**
+     * The environment variable key for the JWT ID.
+     * @var string
+     */
     const ENV_ID = 'JWT_ID';
+
+    /**
+     * The environment variable key for the JWT expiration time.
+     * @var string
+     */
     const ENV_EXPIRE = 'JWT_EXPIRE';
+
+    /**
+     * The environment variable key for the JWT request time.
+     * @var string
+     */
     const ENV_REQUEST_TIME = 'JWT_REQUEST_TIME';
+
+    /**
+     * The environment variable key for the primary site URL.
+     * @var string
+     */
     const ENV_PRIMARY_SITE_URL = 'PRIMARY_SITE_URL';
 
     /**
