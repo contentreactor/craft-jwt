@@ -10,10 +10,26 @@ use craft\base\Model;
  */
 class JwtSettingsModel extends Model
 {
+    /** @var string The JWT secret key. */
+    public $jwtSecretKey;
+
+    /** @var string The JWT ID. */
+    public $jwtId;
+
+    /** @var string The JWT expiration time. */
+    public $jwtExpire;
+
+     /** @var string The JWT request time. */
+    public $jwtRequestTime;
+
+    /**
+     * @inheritdoc
+     */
     protected function defineRules(): array
     {
-        return array_merge(parent::defineRules(), [
-            // ...
-        ]);
+        return [
+            [['jwtSecretKey', 'jwtId', 'jwtExpire', 'jwtRequestTime'], 'required'],
+            [['jwtSecretKey', 'jwtId', 'jwtExpire', 'jwtRequestTime'], 'string'],
+        ];
     }
 }

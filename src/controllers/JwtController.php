@@ -16,7 +16,14 @@ use yii\rest\Controller;
  */
 class JwtController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
     public $defaultAction = 'index';
+
+    /**
+     * @inheritdoc
+     */
     protected array|int|bool $allowAnonymous = true;
 
     /**

@@ -3,10 +3,12 @@
 namespace contentreactor\jwt;
 
 use contentreactor\jwt\middleware\JwtAuthMiddleware;
+use contentreactor\jwt\models\JwtSettingsModel;
 use contentreactor\jwt\services\AuthService;
 use Craft;
 use contentreactor\jwt\services\TokenService;
 use contentreactor\jwt\traits\Services;
+use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\events\RegisterUrlRulesEvent;

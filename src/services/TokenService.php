@@ -33,11 +33,6 @@ class TokenService extends Component
     const ENV_REQUEST_TIME = 'JWT_REQUEST_TIME';
     const ENV_PRIMARY_SITE_URL = 'PRIMARY_SITE_URL';
 
-    const TOKEN_VALID = 'Token is valid.';
-    const TOKEN_INVALID = 'Token validation failed.';
-    const TOKEN_EXPIRED = 'Token is expired.';
-    const TOKEN_ERROR = 'Error validating token.';
-
     /**
      * Saves a JWT token for a user.
      *
@@ -137,19 +132,20 @@ class TokenService extends Component
      */
     public function generateJwt($user): Plain
     {
+        $pluginSettings = Craft::$app->getProjectConfig()->get('contentreactor-jwt');
         $tokenBuilder = (new Builder(new JoseEncoder(), ChainedFormatter::default()));
         $algorithm    = new Sha256();
-        $signingKey   = InMemory::plainText(getenv(self::ENV_SECRET_KEY));
+        $signingKey   = InMemory::plainText($pluginSettings['jwtSecretKey'] ?? getenv(self::ENV_SECRET_KEY));
 
         $now   = new DateTimeImmutable();
 
         $token = $tokenBuilder
             ->issuedBy(getenv(self::ENV_PRIMARY_SITE_URL))
             ->permittedFor(getenv(self::ENV_PRIMARY_SITE_URL))
-            ->identifiedBy(getenv(self::ENV_ID), true)
+            ->identifiedBy($pluginSettings['jwtId'] ?? getenv(self::ENV_ID), true)
             ->issuedAt($now)
-            ->canOnlyBeUsedAfter($now->modify(getenv(self::ENV_REQUEST_TIME)))
-            ->expiresAt($now->modify(getenv(self::ENV_EXPIRE)))
+            ->canOnlyBeUsedAfter($now->modify($pluginSettings['jwtRequestTime'] ?? getenv(self::ENV_REQUEST_TIME)))
+            ->expiresAt($now->modify($pluginSettings['jwtExpire'] ?? getenv(self::ENV_EXPIRE)))
             ->withClaim('uid', $user->id)
             ->withClaim('email', $user->email)
             ->getToken($algorithm, $signingKey);

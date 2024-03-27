@@ -25,7 +25,6 @@ class JwtModel extends Model
     {
         return array_merge(parent::defineRules(), [
             [['userId', 'token', 'expiration_date'], 'required'],
-            
             [['userId'], 'integer'],
             [['token'], 'string', 'max' => 255],
         ]);

@@ -82,7 +82,14 @@ class AuthService extends Component
         return $expirationDate > time();
     }
 
-    public function parseToken(string $token)
+    /**
+     * Parses the given JWT token and returns the user ID extracted from it.
+     *
+     * @param string $token The JWT token to parse.
+     * @return int|null The user ID extracted from the token, or null if parsing fails.
+     * @throws UnsupportedHeaderFound If the token parsing fails due to an unsupported header.
+     */
+    public function parseToken(string $token): ?int
     {
         $parser = new Parser(new JoseEncoder());
 
@@ -96,19 +103,38 @@ class AuthService extends Component
         return $token->claims()->get('uid');
     }
 
-    public function isApiPath()
+    /**
+     * Checks if the current request path contains "api".
+     *
+     * @return bool Whether the current request path contains "api".
+     */
+    public function isApiPath(): bool
     {
         $paths = explode('/', Craft::$app->getRequest()->getPathInfo());
         return in_array('api', $paths);
     }
 
-    public function userHavePermission(int $userId)
+    /**
+     * Checks if the user has permission to access the ContentReactor API.
+     *
+     * @param int $userId The ID of the user to check permissions for.
+     * @return bool Whether the user has permission to access the ContentReactor API.
+     */
+    public function userHavePermission(int $userId): bool
     {
         $user = User::find()->id($userId)->one();
         return $this->_searchValue('contentReactorApi', $user->getGroups(), 'handle');
     }
 
-    private function _searchValue($value, $array, $key)
+    /**
+     * Searches for a specific value within a multidimensional array.
+     *
+     * @param mixed $value The value to search for.
+     * @param array $array The array to search in.
+     * @param string $key The key to compare the value against.
+     * @return bool Whether the value was found in the array.
+     */
+    private function _searchValue($value, $array, $key): bool
     {
         $found = false;
 

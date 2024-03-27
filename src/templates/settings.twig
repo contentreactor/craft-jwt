@@ -4,22 +4,75 @@
 {% set selectedSubnavItem = 'contentreactor-jwt/settings' %}
 {% set fullPageForm = true %}
 
+{% if settings is not defined %}
+    {% set settings = craft.app.projectConfig.get('contentreactor-jwt') %}
+    {% set freshSettings = true %}
+{% else %}
+    {% set freshSettings = false %}
+{% endif %}
+
 {% block content %}
     <div class="cp-container">
         <form method="post" accept-charset="UTF-8">
             {{ csrfInput() }}
+            {{ actionInput('contentreactor-jwt/settings/save-settings') }}
             {{ redirectInput('contentreactor-jwt/settings') }}
-            <input type="hidden" name="action" value="yourplugin/settings/save-settings">
 
-            <h2>ContentReactor JWT API</h2>
+            <h2>{{ 'ContentReactor JWT API'|t('contentreactor-jwt') }}</h2>
 
-            {{ forms.textField({
-                label: "Your Setting",
-                id: 'yourSetting',
-                name: 'settings[yourSetting]',
+            {{ forms.autosuggestField({
+                first: true,
+                label: "JWT Secret key"|t('contentreactor-jwt'),
+                instructions: "JWT Secret key"|t('contentreactor-jwt'),
+                id: 'jwtSecretKey',
+                name: 'jwtSecretKey',
+                suggestEnvVars: true,
+                autofocus: true,
+                value: settings.jwtSecretKey,
+                required: true,
+                errors: (freshSettings ? null : settings.getErrors('jwtSecretKey'))
             }) }}
 
-            <button class="btn submit">Save Settings</button>
+            {{ forms.autosuggestField({
+                first: true,
+                label: "JWT ID"|t('contentreactor-jwt'),
+                instructions: "JWT ID"|t('contentreactor-jwt'),
+                id: 'jwtId',
+                name: 'jwtId',
+                suggestEnvVars: true,
+                autofocus: true,
+                value: settings.jwtId,
+                required: true,
+                errors: (freshSettings ? null : settings.getErrors('jwtId'))
+            }) }}
+
+            {{ forms.autosuggestField({
+                first: true,
+                label: "JWT Expire"|t('contentreactor-jwt'),
+                instructions: "JWT Expire"|t('contentreactor-jwt'),
+                id: 'jwtExpire',
+                name: 'jwtExpire',
+                suggestEnvVars: true,
+                autofocus: true,
+                value: settings.jwtExpire,
+                required: true,
+                errors: (freshSettings ? null : settings.getErrors('jwtExpire'))
+            }) }}
+
+            {{ forms.autosuggestField({
+                first: true,
+                label: "JWT Request Time"|t('contentreactor-jwt'),
+                instructions: "JWT Request Time"|t('contentreactor-jwt'),
+                id: 'jwtRequestTime',
+                name: 'jwtRequestTime',
+                suggestEnvVars: true,
+                autofocus: true,
+                value: settings.jwtRequestTime,
+                required: true,
+                errors: (freshSettings ? null : settings.getErrors('jwtRequestTime'))
+            }) }}
+
+            <button class="btn submit">{{ 'Save Settings'|t('contentreactor-jwt') }}</button>
         </form>
     </div>
 {% endblock %}
