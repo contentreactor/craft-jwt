@@ -3,6 +3,8 @@
 JWT Auth plugin for Craft CMS
 
 ## Usage
+
+Make POST request to retrive your token to use all the API endpoints.
 ``` bash
 POST /api/auth
 # body params
