@@ -15,6 +15,13 @@ POST /api/auth
 ```
 You need to have ContentReactor API user group and ContentReactor JWT (Use API with JWT auth) permission added to your profile. 
 
+Add this variables to your .env, modify to your needs.
+```bash
+JWT_SECRET_KEY=""
+JWT_ID=""
+JWT_EXPIRE=""
+JWT_REQUEST_TIME=""
+```
 ## Requirements
 
 This plugin requires Craft CMS 4.7.0 or later, and PHP 8.0.2 or later.
