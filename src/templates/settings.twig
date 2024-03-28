@@ -28,7 +28,7 @@
                 name: 'jwtSecretKey',
                 suggestEnvVars: true,
                 autofocus: true,
-                value: settings.jwtSecretKey ?? '',
+                value: settings.jwtSecretKey,
                 required: true,
                 errors: (freshSettings ? null : settings.getErrors('jwtSecretKey'))
             }) }}
@@ -41,7 +41,7 @@
                 name: 'jwtId',
                 suggestEnvVars: true,
                 autofocus: true,
-                value: settings.jwtId ?? '',
+                value: settings.jwtId,
                 required: true,
                 errors: (freshSettings ? null : settings.getErrors('jwtId'))
             }) }}
@@ -54,7 +54,7 @@
                 name: 'jwtExpire',
                 suggestEnvVars: true,
                 autofocus: true,
-                value: settings.jwtExpire ?? '',
+                value: settings.jwtExpire,
                 required: true,
                 errors: (freshSettings ? null : settings.getErrors('jwtExpire'))
             }) }}
@@ -67,7 +67,7 @@
                 name: 'jwtRequestTime',
                 suggestEnvVars: true,
                 autofocus: true,
-                value: settings.jwtRequestTime ?? '',
+                value: settings.jwtRequestTime,
                 required: true,
                 errors: (freshSettings ? null : settings.getErrors('jwtRequestTime'))
             }) }}
