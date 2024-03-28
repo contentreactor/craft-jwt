@@ -7,7 +7,7 @@ use contentreactor\jwt\services\TokenService;
 use Craft;
 use craft\elements\User;
 use DateTime;
-use yii\base\InvalidConfigException;
+use Exception;
 use yii\base\Response;
 use yii\rest\Controller;
 
@@ -79,17 +79,15 @@ class JwtController extends Controller
     public function actionLogin(): Response
     {
         $_authService = $this->authService;
-        $loginName = $this->request->getRequiredBodyParam('loginName');
-        $password = $this->request->getRequiredBodyParam('password');
-        $user = $_authService->findLoginUser($loginName);
 
-        if (!$user->authenticate($password)) {
-            return throw new InvalidConfigException('Invalid credentials');
+        try {
+            $loginName = $this->request->getRequiredBodyParam('loginName');
+            $password = $this->request->getRequiredBodyParam('password');
+            $user = $_authService->findLoginUser($loginName);
+            return $this->_validateUser($user, $password);
+        } catch (Exception) {
+            return $this->_invalidCredentials("Missing required body parameters.");
         }
-
-        $token = $this->_createOrRead($user);
-
-        return $this->asJson(['token' => $token]);
     }
 
     /**
@@ -97,7 +95,7 @@ class JwtController extends Controller
      * @param \craft\elements\User $user The user object
      * @return string The generated or existing token
      */
-    public function _createOrRead(User $user): string
+    private function _createOrRead(User $user): string
     {
         $_tokenService = $this->tokenService;
         $tokenRecord = $_tokenService->getTokenForUser($user->id)->token ?? null;
@@ -112,12 +110,45 @@ class JwtController extends Controller
                     $user->id,
                     $token,
                     $this->time->modify(
-                        getenv($_tokenService->replaceKey($pluginSettings['jwtExpire'])) ?? 
-                        getenv(self::ENV_EXPIRE)
+                        getenv($_tokenService->replaceKey($pluginSettings['jwtExpire'])) ??
+                            getenv(self::ENV_EXPIRE)
                     )
                 );
             }
         }
         return $token;
+    }
+
+    /**
+     * Responds with a JSON-encoded message indicating invalid credentials
+     *
+     * @param string $message The message to be included in the response. Default is 'Invalid credentials.'
+     * @return Response The response object with status code 401 and a JSON-encoded message.
+     */
+    private function _invalidCredentials($message = 'Invalid credentials.'): Response
+    {
+        Craft::$app->getResponse()->setStatusCode(401);;
+        return $this->asJson(['message' => $message]);
+    }
+
+    /**
+     * Validates user credentials and generates a token upon successful authentication.
+     *
+     * @param User|null $user The user object to validate. Null if user is not found.
+     * @param string $password The password to authenticate the user.
+     * @return Response|null The response object with a JSON-encoded token upon successful authentication,
+     *                       or null if user is not found or authentication fails.
+     */
+    private function _validateUser(User|null $user, string $password): Response|null
+    {
+        if ($user) {
+            if (!$user->authenticate($password)) {
+                return $this->_invalidCredentials();
+            }
+            $token = $this->_createOrRead($user);
+            return $this->asJson(['token' => $token]);
+        } else {
+            return $this->_invalidCredentials();
+        }
     }
 }

@@ -105,9 +105,9 @@ class Install extends Migration
 
         if ($existingGroup) {
             $this->insert(Table::USERGROUPS, [
-                'name' => 'ContentReactor API',
+                'name' => 'API',
                 'handle' => 'contentReactorApi',
-                'description' => 'Add users to use API', 
+                'description' => 'ContentReactor JWT API', 
             ]);
         }
     }
